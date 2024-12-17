@@ -1,0 +1,54 @@
+{
+  "contact": 1000000,
+  "recalculatePrice": true,
+  "airline": "QH",
+  "source": "QH",
+  "agencyCode": "AGC-1000000",
+  "paxCode": "CTM-51",
+  "pnrNumber": "EYRJ8O",
+  "paxList": [
+    {
+      "firstName": "THI DIEU",
+      "lastName": "BUI",
+      "title": "MRS",
+      "paxType": "ADULT",
+      "paxId": "2",
+      "PaxDocuments": [
+        
+      ]
+    }
+  ],
+  "itineraries": [
+    {
+      "source": "QH",
+      "clientId": "",
+      "bookingKey": "",
+      "fareBreakdowns": [
+        {
+          "paxType": "ADULT",
+          "netFare": 0,
+          "tax": 0,
+          "total": 0,
+          "fareValue": ""
+        }
+      ],
+      "segments": [
+        {
+          "leg": 1,
+          "airline": "QH",
+          "departure": "HAN",
+          "arrival": "SGN",
+          "departureTime": "2024-11-21T22:20:00+07:00",
+          "arrivalTime": "2024-11-22T00:30:00+07:00",
+          "flightNumber": "283",
+          "fareType": "",
+          "fareBasisCode": "",
+          "bookingClass": "O",
+          "groupClass": "EconomySaverMax",
+          "marriageGrp": "",
+          "segmentValue": ""
+        }
+      ]
+    }
+  ]
+}

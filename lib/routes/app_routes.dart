@@ -13,6 +13,9 @@ class AppRouter extends $AppRouter {
         AutoRoute(
           page: HomeRoute.page,
         ),
+        AutoRoute(
+          page: SignInRoute.page,
+        ),
       ];
   @override
   RouteType get defaultRouteType => const RouteType.material();

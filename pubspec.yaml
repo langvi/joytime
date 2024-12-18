@@ -20,7 +20,7 @@ dependencies:
   auto_route: ^7.8.4
   equatable: ^2.0.5
   another_flushbar: ^1.10.23
-  encrypt_shared_preferences: ^0.7.2
+  flutter_secure_storage: ^9.2.0
   shared_preferences: ^2.2.3
   intl: 0.18.1
 

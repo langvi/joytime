@@ -1,14 +1,27 @@
-import 'package:encrypt_shared_preferences/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:joytime/shared/consts/preference_consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton()
 class AppPreferences {
+  AppPreferences._internal(
+      this._sharedPreference, this._flutterSecureStorage, this._accessToken);
+  static Future<AppPreferences> create() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final flutterSecureStorage = FlutterSecureStorage();
+    String accessToken = await flutterSecureStorage.read(
+            key: SharedPreferenceKeys.accessToken) ??
+        '';
+    return AppPreferences._internal(
+        sharedPreferences, flutterSecureStorage, accessToken);
+  }
+
   final SharedPreferences _sharedPreference;
-  final EncryptedSharedPreferences _encryptedSharedPreferences;
-  String? _accessToken;
-  AppPreferences(this._sharedPreference, this._encryptedSharedPreferences);
+  final FlutterSecureStorage _flutterSecureStorage;
+  String _accessToken = '';
+
+  // AppPreferences(this._sharedPreference, this._flutterSecureStorage);
   String get deviceToken {
     return _sharedPreference.getString(SharedPreferenceKeys.deviceToken) ?? '';
   }
@@ -21,18 +34,22 @@ class AppPreferences {
   bool get isFirstLaunchApp =>
       _sharedPreference.getBool(SharedPreferenceKeys.isFirstLaunchApp) ?? true;
   String get accessToken {
-    if (_accessToken != null) {
-      return _accessToken!;
-    }
-    _accessToken = _encryptedSharedPreferences
-            .getString(SharedPreferenceKeys.accessToken) ??
-        '';
-    return _accessToken!;
+    return _accessToken;
   }
 
-  String get refreshToken {
-    return _encryptedSharedPreferences
-            .getString(SharedPreferenceKeys.refreshToken) ??
+  // Future<String> get accessToken async {
+  //   if (_accessToken != null) {
+  //     return _accessToken!;
+  //   }
+  //   _accessToken = await _flutterSecureStorage.read(
+  //           key: SharedPreferenceKeys.accessToken) ??
+  //       '';
+  //   return _accessToken!;
+  // }
+
+  Future<String> get refreshToken async {
+    return await _flutterSecureStorage.read(
+            key: SharedPreferenceKeys.refreshToken) ??
         '';
   }
 
@@ -72,21 +89,17 @@ class AppPreferences {
   }
 
   Future<void> saveAccessToken(String token) async {
-    await _encryptedSharedPreferences.setString(
-      SharedPreferenceKeys.accessToken,
-      token,
+    _accessToken = token;
+    await _flutterSecureStorage.write(
+      key: SharedPreferenceKeys.accessToken,
+      value: token,
     );
   }
 
-  String? getAccessToken() {
-    return _encryptedSharedPreferences
-        .getString(SharedPreferenceKeys.accessToken);
-  }
-
   Future<void> saveRefreshToken(String token) async {
-    await _encryptedSharedPreferences.setString(
-      SharedPreferenceKeys.refreshToken,
-      token,
+    await _flutterSecureStorage.write(
+      key: SharedPreferenceKeys.refreshToken,
+      value: token,
     );
   }
 
@@ -118,7 +131,7 @@ class AppPreferences {
   Future<void> removeDataToLogout() async {
     String userName = currentUsername;
     await _sharedPreference.clear();
-    await _encryptedSharedPreferences.clear();
+    await _flutterSecureStorage.deleteAll();
     await saveIsFirsLaunchApp(false);
     saveCurrentUsername(userName);
   }

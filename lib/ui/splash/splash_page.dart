@@ -17,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 2), () {
-      GetIt.instance.get<AppNavigator>().replace(HomeRoute());
+      GetIt.instance.get<AppNavigator>().replace(SignInRoute());
     });
     super.initState();
   }

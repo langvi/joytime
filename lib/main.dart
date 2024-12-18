@@ -11,6 +11,7 @@ import 'package:joytime/app/globals.dart';
 import 'package:joytime/bloc/base_stateful_widget.dart';
 import 'package:joytime/bloc/bloc_observer.dart';
 import 'package:joytime/common_view/flavor_banner.dart';
+import 'package:joytime/data/preference/app_preferences.dart';
 import 'package:joytime/generated/l10n.dart';
 import 'package:joytime/navigation/navigator_observer.dart';
 import 'package:joytime/routes/app_routes.dart';
@@ -19,6 +20,8 @@ import 'package:joytime/tools/flavor_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final instance = await AppPreferences.create();
+  getIt.registerSingleton<AppPreferences>(instance);
   FlavorConfig(
     name: Flavor.PROD.name,
     color: Colors.red,

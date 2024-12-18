@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:joytime/data/api/base/base_response.dart';
 import 'package:joytime/data/api/base/dio_builder.dart';
 import 'package:joytime/data/api/base/rest_api_client.dart';
 import 'package:joytime/data/preference/app_preferences.dart';
@@ -20,4 +21,15 @@ class AuthApiService extends RestApiClient {
         if (_appPreferences.accessToken.isNotEmpty)
           'Authorization': 'Bearer ${_appPreferences.accessToken}',
       };
+  Future<BaseResponse<dynamic>> signIn(
+      {required String username, required String password}) async {
+    var res = await request(
+        path: AppUrls.login,
+        method: RequestMethod.post,
+        body: {
+          "username": username.trim().toLowerCase(),
+          "password": password.trim()
+        });
+    return BaseResponse.fromJson(res);
+  }
 }

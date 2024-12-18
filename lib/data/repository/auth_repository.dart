@@ -3,13 +3,13 @@ import 'package:injectable/injectable.dart';
 import 'package:joytime/data/api/auth_api_service.dart';
 import 'package:joytime/data/api/base/base_response.dart';
 
-import 'package:joytime/data/preference/app_preferences.dart';
+import 'package:joytime/data/storage/app_storage.dart';
 
 @LazySingleton()
 class AuthRepository {
-  final AppPreferences _appPreferences;
+  final AppStorage _appStorage;
   final AuthApiService _apiService;
-  AuthRepository(this._appPreferences, this._apiService);
+  AuthRepository(this._appStorage, this._apiService);
   Future<dynamic> signIn(
       {required String username, required String password}) async {
     var res = await _apiService.signIn(username: username, password: password);

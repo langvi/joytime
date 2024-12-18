@@ -1,19 +1,17 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:injectable/injectable.dart';
 import 'package:joytime/shared/consts/preference_consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-@LazySingleton()
-class AppPreferences {
-  AppPreferences._internal(
+class AppStorage {
+  AppStorage._internal(
       this._sharedPreference, this._flutterSecureStorage, this._accessToken);
-  static Future<AppPreferences> create() async {
+  static Future<AppStorage> create() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final flutterSecureStorage = FlutterSecureStorage();
     String accessToken = await flutterSecureStorage.read(
             key: SharedPreferenceKeys.accessToken) ??
         '';
-    return AppPreferences._internal(
+    return AppStorage._internal(
         sharedPreferences, flutterSecureStorage, accessToken);
   }
 

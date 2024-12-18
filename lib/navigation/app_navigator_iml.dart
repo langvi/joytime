@@ -7,6 +7,8 @@ import 'package:injectable/injectable.dart';
 
 import 'package:flutter/material.dart' as m;
 import 'package:joytime/navigation/app_navigator.dart';
+import 'package:joytime/navigation/app_poup.dart';
+import 'package:joytime/navigation/app_poup_info.dart';
 import 'package:joytime/routes/app_routes.dart';
 import 'package:joytime/shared/config/log_config.dart';
 import 'package:joytime/shared/mixin/log_mixin.dart';
@@ -16,10 +18,9 @@ import 'package:joytime/utils/view_utils.dart';
 @LazySingleton(as: AppNavigator)
 class AppNavigatorImpl extends AppNavigator with LogMixin {
   final AppRouter _appRouter;
+  final AppPoup _appPoup;
   TabsRouter? tabsRouter;
-  AppNavigatorImpl(
-    this._appRouter,
-  );
+  AppNavigatorImpl(this._appRouter, this._appPoup);
   BuildContext get _rootRouterContext =>
       _appRouter.navigatorKey.currentContext!;
   //
@@ -35,7 +36,7 @@ class AppNavigatorImpl extends AppNavigator with LogMixin {
   BuildContext get _currentTabContextOrRootContext =>
       _currentTabRouterContext ?? _rootRouterContext;
   //
-  final _shownPopups = <Widget, Completer<dynamic>>{};
+  final _shownPopups = <AppPopupInfo, Completer<dynamic>>{};
   @override
   bool get canPopSelfOrChildren => _appRouter.canPop();
 
@@ -229,16 +230,16 @@ class AppNavigatorImpl extends AppNavigator with LogMixin {
   }
 
   @override
-  Future<T?> showDialogApp<T extends Object?>(Widget child,
+  Future<T?> showDialogApp<T extends Object?>(AppPopupInfo appPopupInfo,
       {bool barrierDismissible = true,
       bool useSafeArea = false,
       bool useRootNavigator = true}) {
-    if (_shownPopups.containsKey(child)) {
-      logD('Dialog $child already shown');
+    if (_shownPopups.containsKey(appPopupInfo)) {
+      logD('Dialog $appPopupInfo already shown');
 
-      return _shownPopups[child]!.future.safeCast();
+      return _shownPopups[appPopupInfo]!.future.safeCast();
     }
-    _shownPopups[child] = Completer<T?>();
+    _shownPopups[appPopupInfo] = Completer<T?>();
 
     return showDialog<T>(
       context: useRootNavigator
@@ -246,10 +247,10 @@ class AppNavigatorImpl extends AppNavigator with LogMixin {
           : _currentTabContextOrRootContext,
       builder: (_) => m.PopScope(
         onPopInvoked: (value) async {
-          logD('Dialog $child dismissed');
-          _shownPopups.remove(child);
+          logD('Dialog $appPopupInfo dismissed');
+          _shownPopups.remove(appPopupInfo);
         },
-        child: child,
+        child: _appPoup.getPopup(appPopupInfo, this),
       ),
       useRootNavigator: useRootNavigator,
       barrierDismissible: barrierDismissible,
@@ -258,7 +259,7 @@ class AppNavigatorImpl extends AppNavigator with LogMixin {
   }
 
   @override
-  Future<T?> showGeneralDialog<T extends Object?>(Widget child,
+  Future<T?> showGeneralDialog<T extends Object?>(AppPopupInfo appPopupInfo,
       {Widget Function(BuildContext p1, Animation<double> p2,
               Animation<double> p3, Widget p4)?
           transitionBuilder,
@@ -266,12 +267,12 @@ class AppNavigatorImpl extends AppNavigator with LogMixin {
       bool barrierDismissible = false,
       Color barrierColor = const Color(0x80000000),
       bool useRootNavigator = true}) {
-    if (_shownPopups.containsKey(child)) {
-      logD('Dialog $child already shown');
+    if (_shownPopups.containsKey(appPopupInfo)) {
+      logD('Dialog $appPopupInfo already shown');
 
-      return _shownPopups[child]!.future.safeCast();
+      return _shownPopups[appPopupInfo]!.future.safeCast();
     }
-    _shownPopups[child] = Completer<T?>();
+    _shownPopups[appPopupInfo] = Completer<T?>();
 
     return m.showGeneralDialog<T>(
       context: useRootNavigator
@@ -287,10 +288,10 @@ class AppNavigatorImpl extends AppNavigator with LogMixin {
       ) =>
           m.PopScope(
         onPopInvoked: (value) async {
-          logD('Dialog $child dismissed');
-          _shownPopups.remove(child);
+          logD('Dialog $appPopupInfo dismissed');
+          _shownPopups.remove(appPopupInfo);
         },
-        child: child,
+        child: _appPoup.getPopup(appPopupInfo, this),
       ),
       transitionBuilder: transitionBuilder,
       transitionDuration: transitionDuration,

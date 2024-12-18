@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:joytime/navigation/app_poup_info.dart';
 
 abstract class AppNavigator {
   const AppNavigator();
@@ -49,14 +50,14 @@ abstract class AppNavigator {
   bool removeLast();
 
   Future<T?> showDialogApp<T extends Object?>(
-    Widget child, {
+    AppPopupInfo appPopupInfo, {
     bool barrierDismissible = true,
     bool useSafeArea = false,
     bool useRootNavigator = true,
   });
 
   Future<T?> showGeneralDialog<T extends Object?>(
-    Widget child, {
+    AppPopupInfo appPopupInfo, {
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transitionBuilder,
     Duration transitionDuration = const Duration(milliseconds: 200),

@@ -3,13 +3,13 @@ import 'package:injectable/injectable.dart';
 import 'package:joytime/data/api/base/base_response.dart';
 import 'package:joytime/data/api/base/dio_builder.dart';
 import 'package:joytime/data/api/base/rest_api_client.dart';
-import 'package:joytime/data/preference/app_preferences.dart';
+import 'package:joytime/data/storage/app_storage.dart';
 import 'package:joytime/shared/consts/urls.dart';
 
 @LazySingleton()
 class AuthApiService extends RestApiClient {
-  final AppPreferences _appPreferences;
-  AuthApiService(this._appPreferences)
+  final AppStorage _appStorage;
+  AuthApiService(this._appStorage)
       : super(
             dio: DioBuilder.createDio(
                 options: BaseOptions(
@@ -18,8 +18,8 @@ class AuthApiService extends RestApiClient {
 
   @override
   Map<String, String>? get headers => {
-        if (_appPreferences.accessToken.isNotEmpty)
-          'Authorization': 'Bearer ${_appPreferences.accessToken}',
+        if (_appStorage.accessToken.isNotEmpty)
+          'Authorization': 'Bearer ${_appStorage.accessToken}',
       };
   Future<BaseResponse<dynamic>> signIn(
       {required String username, required String password}) async {

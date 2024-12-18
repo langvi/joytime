@@ -7,7 +7,7 @@ import 'package:joytime/resources/dimens/app_dimens.dart';
 @Injectable()
 class AppCubit extends BaseCubit<AppState> {
   AppCubit() : super(AppState());
-  void handleRatioScreen() async {
+  void handleRatioScreen() {
     Dimens.handleRatioScreen(MediaQuery.of(context).size);
   }
 }

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:joytime/bloc/common/common_cubit.dart';
 import 'package:joytime/navigation/app_navigator.dart';
+import 'package:joytime/navigation/app_poup_info.dart';
+import 'package:joytime/routes/app_routes.gr.dart';
+import 'package:joytime/shared/consts/error_code.dart';
 import 'package:joytime/shared/mixin/log_mixin.dart';
 
 enum TypeLoad { first, refresh, loadmore }
@@ -118,16 +121,16 @@ abstract class BaseCubit<S> extends Cubit<S> with LogMixin {
       }
     }
     print("statusCode: $statusCode");
-    // if (errorCode == ErrorCode.sessionExprited) {
-    //   navigator.showDialogApp(AppPopupInfo.confirmDialog(
-    //       message: errorContent,
-    //       onPressed: Func0(() {
-    //         navigator.popUntilRoot();
-    //         navigator.push(LoginRoute());
-    //       })));
-    // } else {
-    //   navigator.showDialogApp(
-    //       AppPopupInfo.errorWithRetryDialog(message: errorContent));
-    // }
+    if (errorCode == ErrorCode.sessionExprited) {
+      navigator.showDialogApp(AppPopupInfo.confirmDialog(
+          message: errorContent,
+          onPressed: () {
+            navigator.popUntilRoot();
+            navigator.push(SignInRoute());
+          }));
+    } else {
+      navigator
+          .showDialogApp(AppPopupInfo.confirmDialog(message: errorContent));
+    }
   }
 }
